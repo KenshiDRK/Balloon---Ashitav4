@@ -414,9 +414,15 @@ balloon.process_balloon = function(message, mode)
     message = message:gsub('^?([%w%.\'(<“])', '%1')
     message = message:gsub('%f[-]%-%-%f[^-]', '—') --replace -- with em dashes
     
-    if balloon.settings.Translation then
+    local tries = 5
+    if balloon.settings.Translation and message ~= "" then
         message = message:gsub('Forrr ', "For ")
-        message = get_translation(message, language[balloon.settings.lang]) or message
+        local t = get_translation(message, language[balloon.settings.lang])
+        while t == nil and tries > 0 do
+            tries = tries - 1
+            t = get_translation(message, language[balloon.settings.lang])
+        end
+        message = t ~= nil and t or message
     end
 
     message = message:gsub("@93537", '\\cr')

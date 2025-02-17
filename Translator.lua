@@ -1,5 +1,5 @@
 local json = require("json")
-local https = require("ssl.https")
+local https = require("socket.ssl.https")
 local url = require("socket.url")
 local glossary = require("glossary")
 local resource_manager = AshitaCore:GetResourceManager()
@@ -13,8 +13,8 @@ end
 
 local plurals_dict = {}
 for id = 1, 65535 do
-    local item = resource_manager:GetItemByID(id)
-    if item and item.LogNamePlural[1] and item.LogNamePlural[1] ~= "" then
+    local success, item = pcall(function() return resource_manager:GetItemByID(id) end)
+    if success and item and item.LogNamePlural[1] and item.LogNamePlural[1] ~= "" then
         plurals_dict[item.LogNamePlural[1]] = true
     end
 end
